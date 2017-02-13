@@ -1,0 +1,24 @@
+
+
+#mysql database setting
+jdbc.driver=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://127.0.0.1/teardowall?useUnicode=true&characterEncoding=utf-8
+#jdbc.url=jdbc:mysql://123.57.247.225/teardowall?useUnicode=true&characterEncoding=utf-8
+jdbc.username=
+jdbc.password=
+
+# log4jdbc
+#log4jdbc.jdbc.driverClassName=net.sf.log4jdbc.DriverSpy
+#log4jdbc.jdbc.url=jdbc:log4jdbc:mysql://localhost:3306/asgab
+
+#connection pool settings
+#jdbc.pool.maxIdle=10
+#jdbc.pool.maxActive=50
+
+#xmo
+#jdbc.url.xmo=jdbc:mysql://10.1.1.130/xmo?useUnicode=true&characterEncoding=utf-8
+#jdbc.username.xmo=xmo_csa
+#jdbc.password.xmo=b
+#jdbc.url.xmo=jdbc:mysql://localhost/local_xmo?useUnicode=true&characterEncoding=utf-8
+#jdbc.username.xmo=root
+#jdbc.password.xmo=iclick2015
