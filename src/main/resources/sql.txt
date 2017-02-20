@@ -1,0 +1,3 @@
+ALTER TABLE `teardowall`.`users` 
+ADD COLUMN `city_name` VARCHAR(45) NULL AFTER `salt`,
+ADD COLUMN `county_name` VARCHAR(45) NULL AFTER `city_name`;
