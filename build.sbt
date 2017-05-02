@@ -31,3 +31,4 @@ libraryDependencies ++= Seq(
 )
 libraryDependencies += "eu.unicredit" %% "hbase-rdd" % "0.8.0"
 libraryDependencies += "com.hankcs" % "hanlp" % "portable-1.3.2"
+libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.21"
