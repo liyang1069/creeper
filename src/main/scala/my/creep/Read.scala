@@ -8,7 +8,7 @@ import java.security.MessageDigest
 //import com.mysql.jdbc.Driver
 import java.sql.DriverManager
 import java.sql.ResultSet
-
+//~/spark-1.6.3-bin-hadoop2.6/bin/spark-submit --jars /Users/jerry.li/hbase-1.2.5/lib/hbase-common-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/hbase-client-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/hbase-server-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/hbase-protocol-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/hbase-hadoop-compat-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/htrace-core-3.1.0-incubating.jar,/Users/jerry.li/hbase-1.2.5/lib/metrics-core-2.2.0.jar --master local --class my.creep.Read target/scala-2.10/creeper-assembly-0.1.0.jar
 object Read extends App {
   val name = "Example of read from HBase table"
 
@@ -17,7 +17,7 @@ object Read extends App {
   implicit val config = HBaseConfig() // Assumes hbase-site.xml is on classpath
   val tableName = "origin_news"
   val driver = "com.mysql.jdbc.Driver"
-  val jdbcUrl = "jdbc:mysql://123.57.247.225/teardowall?useUnicode=true&characterEncoding=utf-8&user=jerry&password=jerry!"
+  val jdbcUrl = "jdbc:mysql://127.0.0.1/newscreeper?useUnicode=true&characterEncoding=utf-8&user=jerry&password=jerry!"
   Class.forName(driver)
   //classOf[com.mysql.jdbc.Driver]
   val conn = DriverManager.getConnection(jdbcUrl)
@@ -58,12 +58,13 @@ object Read extends App {
       }
     }
     val keywords = HanLP.extractKeyword(content.replaceAll("<[^>]+>", ""), 10)
-    println(keywords)
+    //println(keywords)
     val digest = MessageDigest.getInstance("MD5")
     val md5Str = digest.digest(keywords.toString().getBytes).map("%02x".format(_)).mkString
+//    val keyList = doc2keywords(content)
+//    val keyMap = list2map(keyList)
     try{
-      //statement.executeQuery("insert into creeper_news (url, title, content, md5_str) value (" + url + "," + title + "," + content + "," + md5Str + "," + ")")
-      val prep = conn.prepareStatement("INSERT INTO creeper_news (url, title, content, md5_str) VALUES (?, ?, ?, ?) ")
+      val prep = conn.prepareStatement("INSERT INTO news (url, title, content, md5_str) VALUES (?, ?, ?, ?) ")
       prep.setString(1, url)
       prep.setString(2, title)
       prep.setString(3, content)
@@ -74,5 +75,38 @@ object Read extends App {
       case e: Exception => println(e.getMessage)
     }
     return md5Str
+  }
+  
+  def doc2keywords(doc: String): List[String] = {
+    var segment = HanLP.segment(doc)
+    var keySegment: List[String] = List()
+    val equalArray = Array("b","c","cc","e","f","h","k","l","mg","Mg","mq","o","p","pba","rr","rz","ude1","vshi","vyou","vf","w","y","yg","z","zg")
+    val startArray = Array("a","d","p","r","u","w","y","z")
+    for( s <- segment.toArray()){
+      val splitArray = s.toString().split("/")
+      if(equalArray.indexOf(splitArray(1)) < 0){
+        var hasFind = false
+        for(st <- startArray){
+          if(splitArray(1).startsWith(st))
+            hasFind = true
+        }
+        if(!hasFind)
+          keySegment = keySegment.+:(splitArray(0))
+      }
+    }
+    return keySegment
+  }
+  
+  def list2map(list: List[String]): Map[String, Int] = {
+    var map:Map[String,Int] = Map()
+    for(s <- list){
+      if(map.contains(s)){
+        map = map + (s -> (map.get(s).get + 1))
+      }
+      else{
+        map = map + (s -> 1)
+      }
+    }
+    return map
   }
 }

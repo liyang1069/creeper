@@ -26,6 +26,7 @@ val hbaseVersion = "1.2.5"
 
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % sparkVersion % "provided",
+  "org.apache.spark" %% "spark-mllib" % sparkVersion % "provided",
   "org.apache.hbase" % "hbase-common" % hbaseVersion % "provided",
   "org.apache.hbase" % "hbase-client" % hbaseVersion % "provided"
 )

@@ -60,9 +60,6 @@
   <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/com.sun.jersey/jersey-json/bundles/jersey-json-1.9.jar"/>
   <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.codehaus.jettison/jettison/bundles/jettison-1.1.jar"/>
   <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/stax/stax-api/jars/stax-api-1.0.1.jar"/>
-  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/com.sun.xml.bind/jaxb-impl/jars/jaxb-impl-2.2.3-1.jar"/>
-  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/javax.xml.bind/jaxb-api/jars/jaxb-api-2.2.2.jar"/>
-  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/javax.activation/activation/jars/activation-1.1.jar"/>
   <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.codehaus.jackson/jackson-jaxrs/jars/jackson-jaxrs-1.8.3.jar"/>
   <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.codehaus.jackson/jackson-xc/jars/jackson-xc-1.8.3.jar"/>
   <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/com.sun.jersey.contribs/jersey-guice/jars/jersey-guice-1.9.jar"/>
@@ -124,6 +121,38 @@
   <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.tachyonproject/tachyon-underfs-local/jars/tachyon-underfs-local-0.8.2.jar"/>
   <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/net.razorvine/pyrolite/jars/pyrolite-4.9.jar"/>
   <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/net.sf.py4j/py4j/jars/py4j-0.9.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.spark/spark-mllib_2.10/jars/spark-mllib_2.10-1.6.3.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.spark/spark-streaming_2.10/jars/spark-streaming_2.10-1.6.3.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.spark/spark-sql_2.10/jars/spark-sql_2.10-1.6.3.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.spark/spark-catalyst_2.10/jars/spark-catalyst_2.10-1.6.3.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.codehaus.janino/janino/jars/janino-2.7.8.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.codehaus.janino/commons-compiler/jars/commons-compiler-2.7.8.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.parquet/parquet-column/jars/parquet-column-1.7.0.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.parquet/parquet-common/jars/parquet-common-1.7.0.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.parquet/parquet-encoding/jars/parquet-encoding-1.7.0.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.parquet/parquet-generator/jars/parquet-generator-1.7.0.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.parquet/parquet-hadoop/jars/parquet-hadoop-1.7.0.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.parquet/parquet-format/jars/parquet-format-2.3.0-incubating.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.parquet/parquet-jackson/jars/parquet-jackson-1.7.0.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.spark/spark-graphx_2.10/jars/spark-graphx_2.10-1.6.3.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/com.github.fommil.netlib/core/jars/core-1.1.2.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/net.sourceforge.f2j/arpack_combined_all/jars/arpack_combined_all-0.1.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.scalanlp/breeze_2.10/jars/breeze_2.10-0.11.2.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.scalanlp/breeze-macros_2.10/jars/breeze-macros_2.10-0.11.2.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/net.sf.opencsv/opencsv/jars/opencsv-2.3.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/com.github.rwl/jtransforms/jars/jtransforms-2.4.0.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.spire-math/spire_2.10/jars/spire_2.10-0.7.4.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.spire-math/spire-macros_2.10/jars/spire-macros_2.10-0.7.4.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.scalamacros/quasiquotes_2.10/jars/quasiquotes_2.10-2.0.0.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.jpmml/pmml-model/jars/pmml-model-1.1.15.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.jpmml/pmml-agent/jars/pmml-agent-1.1.15.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.jpmml/pmml-schema/jars/pmml-schema-1.1.15.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/com.sun.xml.bind/jaxb-impl/jars/jaxb-impl-2.2.7.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/com.sun.xml.bind/jaxb-core/jars/jaxb-core-2.2.7.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/javax.xml.bind/jaxb-api/jars/jaxb-api-2.2.7.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/com.sun.istack/istack-commons-runtime/jars/istack-commons-runtime-2.16.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/com.sun.xml.fastinfoset/FastInfoset/jars/FastInfoset-1.2.12.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/javax.xml.bind/jsr173_api/jars/jsr173_api-1.0.jar"/>
   <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.hbase/hbase-common/jars/hbase-common-1.2.5.jar"/>
   <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.hbase/hbase-protocol/jars/hbase-protocol-1.2.5.jar"/>
   <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.hbase/hbase-annotations/jars/hbase-annotations-1.2.5.jar"/>
