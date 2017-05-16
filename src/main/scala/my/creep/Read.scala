@@ -8,6 +8,8 @@ import java.security.MessageDigest
 //import com.mysql.jdbc.Driver
 import java.sql.DriverManager
 import java.sql.ResultSet
+import org.apache.hadoop.hbase.filter.PrefixFilter
+
 //~/spark-1.6.3-bin-hadoop2.6/bin/spark-submit --jars /Users/jerry.li/hbase-1.2.5/lib/hbase-common-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/hbase-client-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/hbase-server-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/hbase-protocol-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/hbase-hadoop-compat-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/htrace-core-3.1.0-incubating.jar,/Users/jerry.li/hbase-1.2.5/lib/metrics-core-2.2.0.jar --master local --class my.creep.Read target/scala-2.10/creeper-assembly-0.1.0.jar
 object Read extends App {
   val name = "Example of read from HBase table"
@@ -21,14 +23,16 @@ object Read extends App {
   Class.forName(driver)
   //classOf[com.mysql.jdbc.Driver]
   val conn = DriverManager.getConnection(jdbcUrl)
-  val statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE)
   
-  var rdd = sc.hbase[String](tableName, Set("cf1"))
+  //If you need to read also timestamps, you can use in both cases sc.hbaseTS[K, Q, V] and obtain a RDD[(K, Map[String, Map[Q, (V, Long)]])].
+  val lastTime: Long = 1493420649711L
+  var rdd = sc.hbaseTS[String](tableName, Set("cf1")).filter({ case (k, v) => v("cf1")("url")._2.>(lastTime)})
     .map({ case (k, v) =>
       val cf1 = v("cf1")
-      val url = cf1("url")
-      val title = cf1("title")
-      val content = cf1("content")
+      val url = cf1("url")._1
+      val title = cf1("title")._1
+      val content = cf1("content")._1
+      val timestamp = cf1("url")._2
       
       List(url, title, content) mkString "\t"
   })
@@ -61,8 +65,9 @@ object Read extends App {
     //println(keywords)
     val digest = MessageDigest.getInstance("MD5")
     val md5Str = digest.digest(keywords.toString().getBytes).map("%02x".format(_)).mkString
-//    val keyList = doc2keywords(content)
-//    val keyMap = list2map(keyList)
+    val statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE)
+    val keyList = doc2keywords(content)
+    val keyMap = list2map(keyList)
     try{
       val prep = conn.prepareStatement("INSERT INTO news (url, title, content, md5_str) VALUES (?, ?, ?, ?) ")
       prep.setString(1, url)
