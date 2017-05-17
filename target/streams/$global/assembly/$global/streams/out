@@ -1,13 +1,13 @@
 [0m[[0minfo[0m] [0mIncluding from cache: hbase-rdd_2.10-0.8.0.jar[0m
-[0m[[0minfo[0m] [0mIncluding from cache: hanlp-portable-1.3.2.jar[0m
 [0m[[0minfo[0m] [0mIncluding from cache: mysql-connector-java-5.1.21.jar[0m
+[0m[[0minfo[0m] [0mIncluding from cache: hanlp-portable-1.3.2.jar[0m
 [0m[[0mdebug[0m] [0mCalculate mappings...[0m
 [0m[[0minfo[0m] [0mChecking every *.class/*.jar file's SHA-1.[0m
 [0m[[0minfo[0m] [0mMerging files...[0m
 [0m[[33mwarn[0m] [0mMerging 'META-INF/INDEX.LIST' with strategy 'discard'[0m
 [0m[[33mwarn[0m] [0mMerging 'META-INF/MANIFEST.MF' with strategy 'discard'[0m
 [0m[[33mwarn[0m] [0mStrategy 'discard' was applied to 2 files[0m
-[0m[[0minfo[0m] [0mSHA-1: c2a0975b674d373215f73e167d7b2682a7ed8ee3[0m
+[0m[[0minfo[0m] [0mSHA-1: 5e94d9fa45db17fc3c50e4cba0e88d9d829c23eb[0m
 [0m[[0minfo[0m] [0mPackaging /Users/jerry.li/projects/java/scala/creeper/target/scala-2.10/creeper-assembly-0.1.0.jar ...[0m
 [0m[[0mdebug[0m] [0mInput file mappings:[0m
 [0m[[0mdebug[0m] [0m	META-INF/maven/com.hankcs/hanlp/pom.properties[0m
@@ -1374,6 +1374,8 @@
 [0m[[0mdebug[0m] [0m	  /Users/jerry.li/projects/java/scala/creeper/target/streams/$global/assemblyOption/$global/streams/assembly/25e3de508d633769f353e6a488c80243853a798c_dir/my/creep/Read$$anonfun$2.class[0m
 [0m[[0mdebug[0m] [0m	my/creep/Read$$anonfun$3.class[0m
 [0m[[0mdebug[0m] [0m	  /Users/jerry.li/projects/java/scala/creeper/target/streams/$global/assemblyOption/$global/streams/assembly/25e3de508d633769f353e6a488c80243853a798c_dir/my/creep/Read$$anonfun$3.class[0m
+[0m[[0mdebug[0m] [0m	my/creep/Read$$anonfun$4.class[0m
+[0m[[0mdebug[0m] [0m	  /Users/jerry.li/projects/java/scala/creeper/target/streams/$global/assemblyOption/$global/streams/assembly/25e3de508d633769f353e6a488c80243853a798c_dir/my/creep/Read$$anonfun$4.class[0m
 [0m[[0mdebug[0m] [0m	my/creep/Read$$anonfun$doc2keywords$1$$anonfun$apply$1.class[0m
 [0m[[0mdebug[0m] [0m	  /Users/jerry.li/projects/java/scala/creeper/target/streams/$global/assemblyOption/$global/streams/assembly/25e3de508d633769f353e6a488c80243853a798c_dir/my/creep/Read$$anonfun$doc2keywords$1$$anonfun$apply$1.class[0m
 [0m[[0mdebug[0m] [0m	my/creep/Read$$anonfun$doc2keywords$1.class[0m
@@ -1396,6 +1398,8 @@
 [0m[[0mdebug[0m] [0m	  /Users/jerry.li/projects/java/scala/creeper/target/streams/$global/assemblyOption/$global/streams/assembly/25e3de508d633769f353e6a488c80243853a798c_dir/my/creep/Tesddd$$anonfun$list2map$1.class[0m
 [0m[[0mdebug[0m] [0m	my/creep/Tesddd$$anonfun$main$1.class[0m
 [0m[[0mdebug[0m] [0m	  /Users/jerry.li/projects/java/scala/creeper/target/streams/$global/assemblyOption/$global/streams/assembly/25e3de508d633769f353e6a488c80243853a798c_dir/my/creep/Tesddd$$anonfun$main$1.class[0m
+[0m[[0mdebug[0m] [0m	my/creep/Tesddd$$anonfun$writeTrainFile$1.class[0m
+[0m[[0mdebug[0m] [0m	  /Users/jerry.li/projects/java/scala/creeper/target/streams/$global/assemblyOption/$global/streams/assembly/25e3de508d633769f353e6a488c80243853a798c_dir/my/creep/Tesddd$$anonfun$writeTrainFile$1.class[0m
 [0m[[0mdebug[0m] [0m	my/creep/Tesddd$.class[0m
 [0m[[0mdebug[0m] [0m	  /Users/jerry.li/projects/java/scala/creeper/target/streams/$global/assemblyOption/$global/streams/assembly/25e3de508d633769f353e6a488c80243853a798c_dir/my/creep/Tesddd$.class[0m
 [0m[[0mdebug[0m] [0m	my/creep/Tesddd.class[0m

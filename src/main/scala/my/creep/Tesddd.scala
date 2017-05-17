@@ -4,6 +4,9 @@ import java.sql.DriverManager
 import java.sql.ResultSet
 import com.hankcs.hanlp.HanLP
 import java.security.MessageDigest
+import java.sql.Connection
+import java.io.PrintWriter
+import java.io.File
 
 object Tesddd {
   def main(args: Array[String]): Unit = {
@@ -13,6 +16,11 @@ object Tesddd {
     val conn = DriverManager.getConnection(jdbcUrl)
     val statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE)
     
+    writeTrainFile(conn)
+    //test(conn)
+    println("end")
+    conn.close()
+    return
     val resultSet = statement.executeQuery("select * from news where analysed = 0")
     try{
       while ( resultSet.next() ) {
@@ -66,6 +74,49 @@ object Tesddd {
     }
     println("end")
     conn.close()
+  }
+  
+  def test(conn: Connection): Unit={
+    val statement = conn.createStatement()
+    val rs = statement.executeQuery("select * from news where id = 11")
+    var content = ""
+    while(rs.next()){
+      content = rs.getString("content").replaceAll("<style[^>]+>[^<]+</style>", "").replaceAll("<script[^>]+>[^<]+</script>", "").replaceAll("<[^>]+>", "")
+    }
+    val list = doc2keywords(content)
+    println(list2map(list))
+  }
+  
+  def writeTrainFile(conn: Connection): Unit={
+    val statement = conn.createStatement()
+    val rs = statement.executeQuery("select max(news_id) as news_id from classification_keywords")
+    var news_id = 0
+    while(rs.next()){
+      news_id = rs.getInt("news_id")
+    }
+    val writer = new PrintWriter(new File("trainFile.txt"))
+    for(index <- 1 to news_id){
+      val statement2 = conn.createStatement()
+      val sql = "select * from classification_keywords where news_id = " + index + " order by keyword_id asc"
+      val rs2 = statement2.executeQuery(sql)
+      var str = ""
+      var first = true
+      while(rs2.next()){
+        if(first){
+          first = false
+          str += rs2.getInt("classification_id") + " " + rs2.getInt("keyword_id") + ":" + rs2.getInt("amount")
+        }
+        else{
+          str += " " + rs2.getInt("keyword_id") + ":" + rs2.getInt("amount")
+        }
+      }
+      if(str.length() > 0){
+        //writer.println(str)
+        writer.write(str + "\n")
+      }
+    }
+    writer.close()
+    
   }
     
   def doc2keywords(doc: String): List[String] = {

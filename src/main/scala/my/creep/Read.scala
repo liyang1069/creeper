@@ -9,6 +9,10 @@ import java.security.MessageDigest
 import java.sql.DriverManager
 import java.sql.ResultSet
 import org.apache.hadoop.hbase.filter.PrefixFilter
+import org.apache.spark.mllib.classification.{NaiveBayes, NaiveBayesModel}
+import org.apache.spark.mllib.util.MLUtils
+import org.apache.spark.mllib.regression.LabeledPoint
+import org.apache.spark.mllib.linalg.Vectors
 
 //~/spark-1.6.3-bin-hadoop2.6/bin/spark-submit --jars /Users/jerry.li/hbase-1.2.5/lib/hbase-common-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/hbase-client-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/hbase-server-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/hbase-protocol-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/hbase-hadoop-compat-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/htrace-core-3.1.0-incubating.jar,/Users/jerry.li/hbase-1.2.5/lib/metrics-core-2.2.0.jar --master local --class my.creep.Read target/scala-2.10/creeper-assembly-0.1.0.jar
 object Read extends App {
@@ -24,8 +28,12 @@ object Read extends App {
   //classOf[com.mysql.jdbc.Driver]
   val conn = DriverManager.getConnection(jdbcUrl)
   
+  val training = MLUtils.loadLibSVMFile(sc, "/newscreeper/trainFile.txt")
+  val model = NaiveBayes.train(training)//, lambda = 1.0, modelType = "multinomial")
+  //val broadModel = sc.broadcast(model)
+  
   //If you need to read also timestamps, you can use in both cases sc.hbaseTS[K, Q, V] and obtain a RDD[(K, Map[String, Map[Q, (V, Long)]])].
-  val lastTime: Long = 1493420649711L
+  val lastTime: Long = 1494841758770L
   var rdd = sc.hbaseTS[String](tableName, Set("cf1")).filter({ case (k, v) => v("cf1")("url")._2.>(lastTime)})
     .map({ case (k, v) =>
       val cf1 = v("cf1")
@@ -36,6 +44,15 @@ object Read extends App {
       
       List(url, title, content) mkString "\t"
   })
+//  var rdd = sc.hbase[String](tableName, Set("cf1"))
+//    .map({ case (k, v) =>
+//      val cf1 = v("cf1")
+//      val url = cf1("url")
+//      val title = cf1("title")
+//      val content = cf1("content")
+//      
+//      List(url, title, content) mkString "\t"
+//  })
   rdd = rdd.cache()
   println("================" + rdd.count())
   
@@ -61,24 +78,47 @@ object Read extends App {
         index += 1
       }
     }
-    val keywords = HanLP.extractKeyword(content.replaceAll("<[^>]+>", ""), 10)
+    val keywords = HanLP.extractKeyword(content.replaceAll("<style[^>]+>[^<]+</style>", "").replaceAll("<script[^>]+>[^<]+</script>", "").replaceAll("<[^>]+>", ""), 10)
     //println(keywords)
     val digest = MessageDigest.getInstance("MD5")
     val md5Str = digest.digest(keywords.toString().getBytes).map("%02x".format(_)).mkString
     val statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE)
-    val keyList = doc2keywords(content)
+    val keyList = doc2keywords(content.replaceAll("<style[^>]+>[^<]+</style>", "").replaceAll("<script[^>]+>[^<]+</script>", "").replaceAll("<[^>]+>", ""))
     val keyMap = list2map(keyList)
-    try{
-      val prep = conn.prepareStatement("INSERT INTO news (url, title, content, md5_str) VALUES (?, ?, ?, ?) ")
-      prep.setString(1, url)
-      prep.setString(2, title)
-      prep.setString(3, content)
-      prep.setString(4, md5Str)
-      prep.executeUpdate
+    
+    val statement1 = conn.createStatement()
+    val sql = "select * from keywords where name in (\"" + keyList.mkString("\",\"") + "\") order by id asc"
+    val rs1 = statement1.executeQuery(sql)
+    var indexList: List[Int] = List()
+    var valueList: List[Double] = List()
+    println(keyMap.keys)
+    while(rs1.next()){
+      val kid = rs1.getInt("id")
+      val kname = rs1.getString("name")
+      indexList = indexList.+:(kid - 1)
+      if(keyMap.get(kname) != null){
+        valueList = valueList.+:(keyMap.get(kname).get.toDouble)
+      }
+      else{
+        println("========================" + kname)
+      }
     }
-    catch{
-      case e: Exception => println(e.getMessage)
-    }
+    val vector = Vectors.sparse(3105, indexList.toArray, valueList.toArray)
+    val label = model.predict(vector)
+    println("========================" + label)
+    
+//    try{
+//      val prep = conn.prepareStatement("INSERT INTO news (url, title, content, md5_str,classification_id) VALUES (?, ?, ?, ?, ?) ")
+//      prep.setString(1, url)
+//      prep.setString(2, title)
+//      prep.setString(3, content)
+//      prep.setString(4, md5Str)
+//      prep.setDouble(5, label)
+//      prep.executeUpdate
+//    }
+//    catch{
+//      case e: Exception => println(e.getMessage)
+//    }
     return md5Str
   }
   
