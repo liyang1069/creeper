@@ -7,7 +7,7 @@
 [0m[[33mwarn[0m] [0mMerging 'META-INF/INDEX.LIST' with strategy 'discard'[0m
 [0m[[33mwarn[0m] [0mMerging 'META-INF/MANIFEST.MF' with strategy 'discard'[0m
 [0m[[33mwarn[0m] [0mStrategy 'discard' was applied to 2 files[0m
-[0m[[0minfo[0m] [0mSHA-1: 5e94d9fa45db17fc3c50e4cba0e88d9d829c23eb[0m
+[0m[[0minfo[0m] [0mSHA-1: 37c72ba25c0031e03b51df2edb1f48e3f6f8a6c6[0m
 [0m[[0minfo[0m] [0mPackaging /Users/jerry.li/projects/java/scala/creeper/target/scala-2.10/creeper-assembly-0.1.0.jar ...[0m
 [0m[[0mdebug[0m] [0mInput file mappings:[0m
 [0m[[0mdebug[0m] [0m	META-INF/maven/com.hankcs/hanlp/pom.properties[0m

@@ -5,7 +5,6 @@ import org.apache.spark.SparkContext
 import unicredit.spark.hbase._
 import _root_.com.hankcs.hanlp.HanLP
 import java.security.MessageDigest
-//import com.mysql.jdbc.Driver
 import java.sql.DriverManager
 import java.sql.ResultSet
 import org.apache.hadoop.hbase.filter.PrefixFilter
@@ -21,20 +20,25 @@ object Read extends App {
   lazy val sparkConf = new SparkConf().setAppName(name)
   lazy val sc = new SparkContext(sparkConf)
   implicit val config = HBaseConfig() // Assumes hbase-site.xml is on classpath
-  val tableName = "origin_news"
+  val hbaseTableName = "origin_news"
   val driver = "com.mysql.jdbc.Driver"
   val jdbcUrl = "jdbc:mysql://127.0.0.1/newscreeper?useUnicode=true&characterEncoding=utf-8&user=jerry&password=jerry!"
+  
+  val common = new Common()
+  
+  //mysql connection
   Class.forName(driver)
-  //classOf[com.mysql.jdbc.Driver]
   val conn = DriverManager.getConnection(jdbcUrl)
   
+  //trainning data, read mysql and then write in file
   val training = MLUtils.loadLibSVMFile(sc, "/newscreeper/trainFile.txt")
   val model = NaiveBayes.train(training)//, lambda = 1.0, modelType = "multinomial")
-  //val broadModel = sc.broadcast(model)
+  val broadModel = sc.broadcast(model)
+  
+  val lastTime: Long = getLastTime()
   
   //If you need to read also timestamps, you can use in both cases sc.hbaseTS[K, Q, V] and obtain a RDD[(K, Map[String, Map[Q, (V, Long)]])].
-  val lastTime: Long = 1494841758770L
-  var rdd = sc.hbaseTS[String](tableName, Set("cf1")).filter({ case (k, v) => v("cf1")("url")._2.>(lastTime)})
+  var rdd = sc.hbaseTS[String](hbaseTableName, Set("cf1")).filter({ case (k, v) => v("cf1")("url")._2.>(lastTime)})
     .map({ case (k, v) =>
       val cf1 = v("cf1")
       val url = cf1("url")._1
@@ -44,27 +48,34 @@ object Read extends App {
       
       List(url, title, content) mkString "\t"
   })
-//  var rdd = sc.hbase[String](tableName, Set("cf1"))
-//    .map({ case (k, v) =>
-//      val cf1 = v("cf1")
-//      val url = cf1("url")
-//      val title = cf1("title")
-//      val content = cf1("content")
-//      
-//      List(url, title, content) mkString "\t"
-//  })
   rdd = rdd.cache()
   println("================" + rdd.count())
-  
-//  for(line <- rdd.collect()){
-//    write2mysql(line)
-//  }
   
   rdd.foreach(line => write2mysql(line))
   conn.close()
   println("+++++++++++++++++++++++++++++++++++++++++++++++")
   
-  def write2mysql(line:String):String = {
+  def getLastTime(): Long={
+    var time: Long = 0L
+    val statement = conn.createStatement()
+    val rs = statement.executeQuery("select * from common_data where description = \"lastTime\" limit 1")
+    while(rs.next()){
+      time = rs.getLong("data")
+    }
+    return time
+  }
+  
+  def getMaxKeyword(): Int={
+    var maxId: Int = 0
+    val statement = conn.createStatement()
+    val rs = statement.executeQuery("select max(id) as id from keywords")
+    while(rs.next()){
+      maxId = rs.getInt("id")
+    }
+    return maxId
+  }
+  
+  def write2mysql(line:String): String= {
     val array = line.split("\t")
     val url = array(0)
     val title = array(1)
@@ -78,13 +89,14 @@ object Read extends App {
         index += 1
       }
     }
-    val keywords = HanLP.extractKeyword(content.replaceAll("<style[^>]+>[^<]+</style>", "").replaceAll("<script[^>]+>[^<]+</script>", "").replaceAll("<[^>]+>", ""), 10)
-    //println(keywords)
+    //keyword to md5, unique one article
+    val keywords = HanLP.extractKeyword(common.html2str(content), 10)
     val digest = MessageDigest.getInstance("MD5")
     val md5Str = digest.digest(keywords.toString().getBytes).map("%02x".format(_)).mkString
+    
     val statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE)
-    val keyList = doc2keywords(content.replaceAll("<style[^>]+>[^<]+</style>", "").replaceAll("<script[^>]+>[^<]+</script>", "").replaceAll("<[^>]+>", ""))
-    val keyMap = list2map(keyList)
+    val keyList = common.doc2keywords(common.html2str(content))
+    val keyMap = common.list2map(keyList)
     
     val statement1 = conn.createStatement()
     val sql = "select * from keywords where name in (\"" + keyList.mkString("\",\"") + "\") order by id asc"
@@ -103,8 +115,8 @@ object Read extends App {
         println("========================" + kname)
       }
     }
-    val vector = Vectors.sparse(3105, indexList.toArray, valueList.toArray)
-    val label = model.predict(vector)
+    val vector = Vectors.sparse(getMaxKeyword(), indexList.toArray, valueList.toArray)
+    val label = broadModel.value.predict(vector)
     println("========================" + label)
     
 //    try{
@@ -120,38 +132,5 @@ object Read extends App {
 //      case e: Exception => println(e.getMessage)
 //    }
     return md5Str
-  }
-  
-  def doc2keywords(doc: String): List[String] = {
-    var segment = HanLP.segment(doc)
-    var keySegment: List[String] = List()
-    val equalArray = Array("b","c","cc","e","f","h","k","l","mg","Mg","mq","o","p","pba","rr","rz","ude1","vshi","vyou","vf","w","y","yg","z","zg")
-    val startArray = Array("a","d","p","r","u","w","y","z")
-    for( s <- segment.toArray()){
-      val splitArray = s.toString().split("/")
-      if(equalArray.indexOf(splitArray(1)) < 0){
-        var hasFind = false
-        for(st <- startArray){
-          if(splitArray(1).startsWith(st))
-            hasFind = true
-        }
-        if(!hasFind)
-          keySegment = keySegment.+:(splitArray(0))
-      }
-    }
-    return keySegment
-  }
-  
-  def list2map(list: List[String]): Map[String, Int] = {
-    var map:Map[String,Int] = Map()
-    for(s <- list){
-      if(map.contains(s)){
-        map = map + (s -> (map.get(s).get + 1))
-      }
-      else{
-        map = map + (s -> 1)
-      }
-    }
-    return map
   }
 }

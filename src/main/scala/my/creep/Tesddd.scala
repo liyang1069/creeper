@@ -16,6 +16,8 @@ object Tesddd {
     val conn = DriverManager.getConnection(jdbcUrl)
     val statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE)
     
+    val common = new Common()
+    
     writeTrainFile(conn)
     //test(conn)
     println("end")
@@ -28,9 +30,9 @@ object Tesddd {
         val title = resultSet.getString("title")
         val url = resultSet.getString("url")
         val classificationId = resultSet.getInt("classification_id")
-        val content = resultSet.getString("content").replaceAll("<style[^>]+>[^<]+</style>", "").replaceAll("<script[^>]+>[^<]+</script>", "").replaceAll("<[^>]+>", "")
-        val keyList = doc2keywords(content)
-        val keyMap = list2map(keyList)
+        val content = common.html2str(resultSet.getString("content"))
+        val keyList = common.doc2keywords(content)
+        val keyMap = common.list2map(keyList)
         if(id == 20){
           println(keyMap.keys)
           println(content)
@@ -77,14 +79,15 @@ object Tesddd {
   }
   
   def test(conn: Connection): Unit={
+    val common = new Common()
     val statement = conn.createStatement()
     val rs = statement.executeQuery("select * from news where id = 11")
     var content = ""
     while(rs.next()){
-      content = rs.getString("content").replaceAll("<style[^>]+>[^<]+</style>", "").replaceAll("<script[^>]+>[^<]+</script>", "").replaceAll("<[^>]+>", "")
+      content = common.html2str(rs.getString("content"))
     }
-    val list = doc2keywords(content)
-    println(list2map(list))
+    val list = common.doc2keywords(content)
+    println(common.list2map(list))
   }
   
   def writeTrainFile(conn: Connection): Unit={
@@ -117,38 +120,5 @@ object Tesddd {
     }
     writer.close()
     
-  }
-    
-  def doc2keywords(doc: String): List[String] = {
-    var segment = HanLP.segment(doc)
-    var keySegment: List[String] = List()
-    val equalArray = Array("b","c","cc","e","f","h","k","l","mg","Mg","mq","o","p","pba","rr","rz","ude1","vshi","vyou","vf","w","y","yg","z","zg")
-    val startArray = Array("a","d","p","r","u","w","y","z")
-    for( s <- segment.toArray()){
-      val splitArray = s.toString().split("/")
-      if(equalArray.indexOf(splitArray(1)) < 0){
-        var hasFind = false
-        for(st <- startArray){
-          if(splitArray(1).startsWith(st))
-            hasFind = true
-        }
-        if(!hasFind)
-          keySegment = keySegment.+:(splitArray(0))
-      }
-    }
-    return keySegment
-  }
-  
-  def list2map(list: List[String]): Map[String, Int] = {
-    var map:Map[String,Int] = Map()
-    for(s <- list){
-      if(map.contains(s)){
-        map = map + (s -> (map.get(s).get + 1))
-      }
-      else{
-        map = map + (s -> 1)
-      }
-    }
-    return map
   }
 }
