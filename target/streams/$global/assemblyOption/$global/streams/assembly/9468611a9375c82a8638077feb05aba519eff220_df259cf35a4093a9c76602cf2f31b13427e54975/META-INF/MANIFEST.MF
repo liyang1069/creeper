@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Implementation-Title: hbase-rdd
-Implementation-Version: 0.8.0
-Specification-Vendor: eu.unicredit
-Specification-Title: hbase-rdd
-Implementation-Vendor-Id: eu.unicredit
-Specification-Version: 0.8.0
-Implementation-Vendor: eu.unicredit
-
