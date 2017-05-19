@@ -12,6 +12,7 @@ import org.apache.spark.mllib.classification.{NaiveBayes, NaiveBayesModel}
 import org.apache.spark.mllib.util.MLUtils
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.linalg.Vectors
+import java.util.Date
 
 //~/spark-1.6.3-bin-hadoop2.6/bin/spark-submit --jars /Users/jerry.li/hbase-1.2.5/lib/hbase-common-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/hbase-client-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/hbase-server-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/hbase-protocol-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/hbase-hadoop-compat-1.2.5.jar,/Users/jerry.li/hbase-1.2.5/lib/htrace-core-3.1.0-incubating.jar,/Users/jerry.li/hbase-1.2.5/lib/metrics-core-2.2.0.jar --master local --class my.creep.Read target/scala-2.10/creeper-assembly-0.1.0.jar
 object Read extends App {
@@ -36,6 +37,7 @@ object Read extends App {
   val broadModel = sc.broadcast(model)
   
   val lastTime: Long = getLastTime()
+  val nowTime: Long = new Date().getTime
   
   //If you need to read also timestamps, you can use in both cases sc.hbaseTS[K, Q, V] and obtain a RDD[(K, Map[String, Map[Q, (V, Long)]])].
   var rdd = sc.hbaseTS[String](hbaseTableName, Set("cf1")).filter({ case (k, v) => v("cf1")("url")._2.>(lastTime)})
@@ -52,6 +54,7 @@ object Read extends App {
   println("================" + rdd.count())
   
   rdd.foreach(line => write2mysql(line))
+  setNowTime()
   conn.close()
   println("+++++++++++++++++++++++++++++++++++++++++++++++")
   
@@ -63,6 +66,21 @@ object Read extends App {
       time = rs.getLong("data")
     }
     return time
+  }
+  
+  def setNowTime(): Unit={
+    try{
+      val sql = "UPDATE common_data SET data = ? WHERE description = ?"  
+      val pstm = conn.prepareStatement(sql)  
+      pstm.setObject(1, nowTime)  
+      pstm.setString(2, "lastTime")  
+  
+      pstm.executeUpdate()
+    }
+    catch{
+      case e: Exception => println(e.getMessage)
+    }
+
   }
   
   def getMaxKeyword(): Int={
@@ -119,18 +137,18 @@ object Read extends App {
     val label = broadModel.value.predict(vector)
     println("========================" + label)
     
-//    try{
-//      val prep = conn.prepareStatement("INSERT INTO news (url, title, content, md5_str,classification_id) VALUES (?, ?, ?, ?, ?) ")
-//      prep.setString(1, url)
-//      prep.setString(2, title)
-//      prep.setString(3, content)
-//      prep.setString(4, md5Str)
-//      prep.setDouble(5, label)
-//      prep.executeUpdate
-//    }
-//    catch{
-//      case e: Exception => println(e.getMessage)
-//    }
+    try{
+      val prep = conn.prepareStatement("INSERT INTO news (url, title, content, md5_str,classification_id) VALUES (?, ?, ?, ?, ?) ")
+      prep.setString(1, url)
+      prep.setString(2, title)
+      prep.setString(3, content)
+      prep.setString(4, md5Str)
+      prep.setDouble(5, label)
+      prep.executeUpdate
+    }
+    catch{
+      case e: Exception => println(e.getMessage)
+    }
     return md5Str
   }
 }

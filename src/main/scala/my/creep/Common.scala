@@ -5,14 +5,14 @@ import com.hankcs.hanlp.HanLP
 class Common {
   
   def html2str(htmlString: String): String={
-    return htmlString.replaceAll("<style[^>]+>[^<]+</style>", "").replaceAll("<script[^>]+>[^<]+</script>", "").replaceAll("<[^>]+>", "")
+    return htmlString.replaceAll("&.*?;", "").replaceAll("<script[^>]*?>.*?</script>", "").replaceAll("<!--\\[if[^>]*?>.*?<!\\[endif\\]-->", "").replaceAll("<style[^>]*?>.*?</style>", "").replaceAll("<[^>]*>", "")
   }
   
   def doc2keywords(doc: String): List[String] = {
     var segment = HanLP.segment(doc)
     var keySegment: List[String] = List()
     val equalArray = Array("b","c","cc","e","f","h","k","l","mg","Mg","mq","o","p","pba","rr","rz","ude1","vshi","vyou","vf","w","y","yg","z","zg")
-    val stringArray = Array("可以","发现","可","可能","能","像","一些","些","个","没有","一定","一定会","会","比如","就是","不会","具有","有")
+    val stringArray = Array("可以","发现","可","可能","能","像","一些","些","个","没有","一定","一定会","会","比如","就是","不会","具有","有","-->")
     val startArray = Array("a","d","p","r","u","w","y","z")
     for( s <- segment.toArray()){
       val splitArray = s.toString().split("/")
@@ -22,7 +22,7 @@ class Common {
           if(splitArray(1).startsWith(st))
             hasFind = true
         }
-        if(!hasFind)
+        if(!hasFind && splitArray(0) != null && splitArray(0).split(" ").length.>(0) && splitArray(0).split("\t").length.>(0))
           keySegment = keySegment.+:(splitArray(0))
       }
     }
