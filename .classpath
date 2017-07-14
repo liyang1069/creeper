@@ -169,6 +169,10 @@
   <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.jruby.jcodings/jcodings/jars/jcodings-1.0.8.jar"/>
   <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.jruby.joni/joni/jars/joni-2.1.2.jar"/>
   <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/com.yammer.metrics/metrics-core/jars/metrics-core-2.2.0.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.spark/spark-streaming-kafka_2.10/jars/spark-streaming-kafka_2.10-1.6.3.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.kafka/kafka_2.10/jars/kafka_2.10-0.8.2.1.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/org.apache.kafka/kafka-clients/jars/kafka-clients-0.8.2.1.jar"/>
+  <classpathentry kind="lib" path="/Users/jerry.li/.ivy2/cache/com.101tec/zkclient/jars/zkclient-0.3.jar"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
   <classpathentry kind="output" path="bin"/>
 </classpath>

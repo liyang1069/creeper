@@ -3,7 +3,7 @@ name := "creeper"
 
 version := "0.1.0"
 
-crossScalaVersions := Seq("2.10.6", "2.11.8")
+crossScalaVersions := Seq("2.10.6")
 
 assemblySettings
 
@@ -27,9 +27,11 @@ val hbaseVersion = "1.2.5"
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % sparkVersion % "provided",
   "org.apache.spark" %% "spark-mllib" % sparkVersion % "provided",
+  "org.apache.spark" %% "spark-streaming" % sparkVersion % "provided",
   "org.apache.hbase" % "hbase-common" % hbaseVersion % "provided",
   "org.apache.hbase" % "hbase-client" % hbaseVersion % "provided"
 )
 libraryDependencies += "eu.unicredit" %% "hbase-rdd" % "0.8.0"
 libraryDependencies += "com.hankcs" % "hanlp" % "portable-1.3.2"
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.21"
+libraryDependencies += "org.apache.spark" % "spark-streaming-kafka_2.10" % "1.6.3" % "provided"
